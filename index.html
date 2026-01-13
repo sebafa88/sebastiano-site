@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sebastiano Facco | Business Partner Telecom</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg: #0f172a;
+            --gold: #cca43b;
+            --text: #e2e8f0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background-image: radial-gradient(circle at center, #1e293b 0%, #020617 100%);
+            padding: 20px;
+        }
+
+        .container {
+            padding: 30px;
+            max-width: 800px;
+            animation: fadeIn 1.5s ease;
+        }
+
+        /* FOTO PROFILO */
+        .profile-pic {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 3px solid var(--gold);
+            margin: 0 auto 30px;
+            /* Assicurati di rinominare la tua foto in profilo.jpg */
+            background-image: url('profilo.jpg');
+            background-size: cover;
+            background-position: center top; 
+            box-shadow: 0 0 30px rgba(204, 164, 59, 0.3);
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+            line-height: 1.1;
+        }
+
+        h2 {
+            font-size: 1.1rem;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #94a3b8;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            font-weight: 300;
+        }
+
+        .btn-contact {
+            text-decoration: none;
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            padding: 12px 40px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: 0.3s;
+            display: inline-block;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .btn-contact:hover {
+            background: var(--gold);
+            color: #000;
+            box-shadow: 0 0 20px rgba(204, 164, 59, 0.5);
+        }
+
+        /* LINK NASCOSTO PER AGENTI */
+        .login-area {
+            position: absolute;
+            bottom: 30px;
+            font-size: 0.75rem;
+            opacity: 0.4;
+            cursor: pointer;
+            transition: 0.3s;
+            color: #64748b;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .login-area:hover { opacity: 1; color: var(--gold); }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 2.2rem; }
+            .profile-pic { width: 150px; height: 150px; }
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="profile-pic"></div>
+        
+        <h1>Sebastiano Facco</h1>
+        <h2>Business Partner & Sales Trainer</h2>
+        
+        <p>
+            Consulente business specializzato in TLC e supporto le aziende nell'evoluzione digitale con soluzioni connettività, mobile e cloud.
+        </p>
+
+        <a href="mailto:info@sebastianofacco.com" class="btn-contact">Contattami</a>
+    </div>
+
+    <div class="login-area" onclick="checkPassword()">
+        <i class="fas fa-lock"></i> Area Partner
+    </div>
+
+    <script>
+        function checkPassword() {
+            // PASSWORD: speedy
+            var password = prompt("Inserisci Password Accesso Partner:");
+            
+            if (password === "speedy") {
+                // Reindirizza alla dashboard operativa
+                window.location.href = "dashboard.html";
+            } else if (password != null) {
+                alert("Password errata.");
+            }
+        }
+    </script>
+
+</body>
+</html>
