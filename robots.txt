@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /area-agenti.html
+Disallow: /_v/
+Allow: /
+
+Sitemap: https://sebastianofacco.com/sitemap.xml

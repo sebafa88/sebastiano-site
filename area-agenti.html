@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Area Agenti | Sebastiano Facco</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230d0d0d'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='16' fill='%23d4af5f' text-anchor='middle'%3ESF%3C/text%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #151515;
+    --line: rgba(255,255,255,.10);
+    --text: #ece9e2;
+    --muted: #8c8880;
+    --gold: #d4af5f;
+    --err: #e2685c;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--gold); color: #0d0d0d; }
+
+  /* ---------- Gate ---------- */
+  #gate {
+    min-height: 100dvh; display: grid; place-items: center; padding: 1.5rem;
+  }
+  .card {
+    width: min(100%, 380px); border: 1px solid var(--line);
+    background: var(--surface); padding: 2.5rem 2rem;
+  }
+  .mark {
+    font-family: Georgia, "Times New Roman", serif; font-size: 1.5rem;
+    color: var(--gold); letter-spacing: .06em; margin: 0 0 .35rem;
+  }
+  .card h1 {
+    font-size: .78rem; font-weight: 500; letter-spacing: .18em;
+    text-transform: uppercase; color: var(--muted); margin: 0 0 2rem;
+  }
+  label { display: block; font-size: .72rem; letter-spacing: .12em;
+          text-transform: uppercase; color: var(--muted); margin-bottom: .6rem; }
+  input {
+    width: 100%; padding: .85rem .9rem; background: #0d0d0d; color: var(--text);
+    border: 1px solid var(--line); border-radius: 0; font-size: 1rem;
+    font-family: inherit;
+  }
+  input:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+  button {
+    width: 100%; margin-top: 1rem; padding: .85rem 1rem; border: 1px solid var(--gold);
+    background: transparent; color: var(--gold); font: inherit; font-size: .82rem;
+    letter-spacing: .14em; text-transform: uppercase; cursor: pointer;
+    transition: background .18s ease, color .18s ease;
+  }
+  button:hover:not(:disabled), button:focus-visible { background: var(--gold); color: #0d0d0d; }
+  button:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+  button:disabled { opacity: .5; cursor: default; }
+  .msg { margin-top: 1rem; font-size: .82rem; color: var(--err); min-height: 1.2em; }
+  .msg.info { color: var(--muted); }
+  .note { margin-top: 2rem; font-size: .72rem; line-height: 1.6; color: var(--muted);
+          border-top: 1px solid var(--line); padding-top: 1rem; }
+
+  /* ---------- Visore ---------- */
+  #viewer { display: none; height: 100dvh; flex-direction: column; }
+  #bar {
+    display: flex; align-items: center; gap: 1rem; padding: .7rem 1rem;
+    border-bottom: 1px solid var(--line); background: var(--surface); flex: 0 0 auto;
+  }
+  #bar .who { font-family: Georgia, serif; color: var(--gold); font-size: .95rem; }
+  #bar .sep { color: var(--line); }
+  #bar .page { font-size: .78rem; letter-spacing: .1em; text-transform: uppercase;
+               color: var(--muted); }
+  #bar .spacer { margin-left: auto; }
+  #bar button { width: auto; margin: 0; padding: .45rem .9rem; font-size: .7rem; }
+  #frame { flex: 1 1 auto; width: 100%; border: 0; background: #fff; }
+  @media (prefers-reduced-motion: no-preference) {
+    .card { animation: up .4s cubic-bezier(.2,.7,.3,1) both; }
+    @keyframes up { from { opacity: 0; transform: translateY(8px); } }
+  }
+</style>
+</head>
+<body>
+
+<main id="gate">
+  <form class="card" id="form" autocomplete="off">
+    <p class="mark">Sebastiano Facco</p>
+    <h1>Area Agenti</h1>
+    <label for="pwd">Password di accesso</label>
+    <input type="password" id="pwd" autocomplete="current-password" autofocus>
+    <button type="submit" id="go">Accedi</button>
+    <p class="msg" id="msg" role="status" aria-live="polite"></p>
+    <p class="note">
+      I contenuti di quest'area sono cifrati. Senza la password corretta
+      non sono leggibili in alcun modo, nemmeno dal codice sorgente.
+    </p>
+  </form>
+</main>
+
+<div id="viewer">
+  <header id="bar">
+    <span class="who">SF</span>
+    <span class="sep">/</span>
+    <span class="page" id="crumb">Dashboard</span>
+    <span class="spacer"></span>
+    <button type="button" id="home">Dashboard</button>
+    <button type="button" id="out">Esci</button>
+  </header>
+  <iframe id="frame" title="Contenuto area agenti"></iframe>
+</div>
+
+<script>
+(() => {
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+  const dec = new TextDecoder();
+  let key = null, manifest = null, kdf = null;
+  const blobs = new Map();
+
+  const b64 = (s) => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+
+  async function deriveKey(password) {
+    const base = await crypto.subtle.importKey(
+      'raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey(
+      { name: 'PBKDF2', salt: b64(kdf.salt), iterations: kdf.iterations, hash: 'SHA-256' },
+      base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+  }
+
+  async function fetchDecrypt(id) {
+    const res = await fetch(`vault/${id}.bin`, { cache: 'no-store' });
+    if (!res.ok) throw new Error('risorsa non disponibile');
+    const raw = new Uint8Array(await res.arrayBuffer());
+    // layout: [iv 12][tag 16][ciphertext]
+    const iv = raw.subarray(0, 12);
+    const body = new Uint8Array(raw.length - 12);
+    body.set(raw.subarray(28), 0);                 // ciphertext
+    body.set(raw.subarray(12, 28), raw.length - 28); // tag in coda (WebCrypto)
+    return crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, body);
+  }
+
+  async function assetUrl(name) {
+    if (blobs.has(name)) return blobs.get(name);
+    const id = manifest.assets[name];
+    if (!id) return name;
+    const buf = await fetchDecrypt(id);
+    const type = /\.png$/i.test(name) ? 'image/png' : 'image/jpeg';
+    const url = URL.createObjectURL(new Blob([buf], { type }));
+    blobs.set(name, url);
+    return url;
+  }
+
+  async function openPage(page) {
+    const id = manifest.pages[page];
+    if (!id) return;
+    let html = dec.decode(await fetchDecrypt(id));
+
+    // Sostituisce i riferimenti alle immagini con i blob decifrati.
+    const names = [...new Set([...html.matchAll(/src="([^"]+\.(?:jpe?g|png))"/gi)]
+      .map(m => m[1].replace(/^\.\//, '')))];
+    for (const n of names) {
+      const url = await assetUrl(n);
+      html = html.split(`src="${n}"`).join(`src="${url}"`)
+                 .split(`src="./${n}"`).join(`src="${url}"`);
+    }
+
+    const frame = $('frame');
+    frame.srcdoc = html;
+    $('crumb').textContent = page.replace(/\.html$/, '').replace(/-/g, ' ')
+      .replace(/\b\w/g, c => c.toUpperCase());
+    sessionStorage.setItem('sf_page', page);
+
+    frame.onload = () => {
+      const doc = frame.contentDocument;
+      if (!doc) return;
+      doc.addEventListener('click', (e) => {
+        const a = e.target.closest('a');
+        if (!a) return;
+        const href = (a.getAttribute('href') || '').replace(/^\.\//, '');
+        if (!href || href.startsWith('#')) return;
+        e.preventDefault();
+        if (manifest.pages[href]) openPage(href);              // resta nel vault
+        else if (/^https?:/i.test(href)) window.open(href, '_blank', 'noopener');
+        else if (/^(mailto:|tel:)/i.test(href)) location.href = href;
+        else if (href === 'index.html') top.location.href = 'index.html'; // torna al sito
+      });
+    };
+  }
+
+  async function unlock(password) {
+    key = await deriveKey(password);
+    const buf = await fetchDecrypt('manifest'); // fallisce se la password è errata
+    manifest = JSON.parse(dec.decode(buf));
+    $('gate').style.display = 'none';
+    $('viewer').style.display = 'flex';
+    await openPage(sessionStorage.getItem('sf_page') || 'dashboard.html');
+  }
+
+  $('form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = $('msg'), btn = $('go');
+    msg.className = 'msg info'; msg.textContent = 'Verifica in corso…';
+    btn.disabled = true;
+    try {
+      const pwd = $('pwd').value;
+      await unlock(pwd);
+      sessionStorage.setItem('sf_k', pwd);
+    } catch (err) {
+      msg.className = 'msg';
+      msg.textContent = 'Password errata.';
+      $('pwd').value = ''; $('pwd').focus();
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  $('home').addEventListener('click', () => openPage('dashboard.html'));
+  $('out').addEventListener('click', () => {
+    sessionStorage.removeItem('sf_k');
+    sessionStorage.removeItem('sf_page');
+    for (const url of blobs.values()) URL.revokeObjectURL(url);
+    location.reload();
+  });
+
+  // Avvio: carica i parametri KDF, poi riapre la sessione se già sbloccata.
+  fetch('vault/kdf.json', { cache: 'no-store' })
+    .then(r => r.json())
+    .then(async (j) => {
+      kdf = j;
+      const saved = sessionStorage.getItem('sf_k');
+      if (saved) { try { await unlock(saved); } catch { sessionStorage.removeItem('sf_k'); } }
+    });
+})();
+</script>
+</body>
+</html>
