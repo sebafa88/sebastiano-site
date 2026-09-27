@@ -182,7 +182,7 @@
   let key = null, manifest = null, kdf = null;
 
   // Guida aperta: ogni apertura ha un numero, così i caricamenti di una guida già chiusa si fermano.
-  let run = 0, open = null, observer = null, urls = [];
+  let run = 0, open = null, observer = null, urls = [], ctrl = null;
 
   const b64 = (s) => Uint8Array.from(atob(s), c => c.charCodeAt(0));
 
@@ -195,8 +195,8 @@
   }
 
   // I file del vault prendono il nome dal contenuto: possono stare in cache. Il manifest no.
-  async function fetchDecrypt(id, fresh) {
-    const res = await fetch(`vault/${id}.bin`, fresh ? { cache: 'no-store' } : {});
+  async function fetchDecrypt(id, fresh, signal) {
+    const res = await fetch(`vault/${id}.bin`, { cache: fresh ? 'no-store' : 'default', signal });
     if (!res.ok) throw new Error('risorsa non disponibile');
     const raw = new Uint8Array(await res.arrayBuffer());
     // layout: [iv 12][tag 16][ciphertext]
@@ -253,6 +253,7 @@
     const mine = run;
     const n = guide.pages.length;
     open = { guide, run: mine };
+    ctrl = 'AbortController' in window ? new AbortController() : null;
 
     document.body.classList.add('reading');
     $('back').hidden = false;
@@ -291,7 +292,7 @@
         fig.append(a);
       }
       list.append(fig);
-      if (observer) observer.observe(fig); else loadPage(fig, p, mine);
+      if (observer) observer.observe(fig); else enqueue(fig, p, mine);
     });
   }
 
@@ -299,14 +300,40 @@
     for (const e of entries) {
       if (!e.isIntersecting || !open) continue;
       observer.unobserve(e.target);
-      loadPage(e.target, open.guide.pages[+e.target.dataset.i], open.run);
+      enqueue(e.target, open.guide.pages[+e.target.dataset.i], open.run);
+    }
+  }
+
+  // Pagine in ordine: la prima da sola (con poco segnale arriva subito), poi tre alla volta.
+  let queue = [], active = 0, firstDone = false, scheduled = false;
+  function enqueue(fig, p, mine) {
+    queue.push({ fig, p, mine, i: +fig.dataset.i });
+    if (scheduled) return;
+    scheduled = true;
+    Promise.resolve().then(() => {        // prima raccoglie tutte le pagine visibili, poi parte
+      scheduled = false;
+      pump();
+    });
+  }
+  function pump() {
+    queue.sort((a, b) => a.i - b.i);
+    while (active < (firstDone ? 3 : 1) && queue.length) {
+      const job = queue.shift();
+      if (job.mine !== run) continue;
+      active++;
+      loadPage(job.fig, job.p, job.mine).finally(() => {
+        if (job.mine !== run) return;   // guida già chiusa: i suoi conti non valgono più
+        firstDone = true;
+        active--;
+        pump();
+      });
     }
   }
 
   async function loadPage(fig, p, mine) {
     const ph = fig.querySelector('.ph');
     try {
-      const buf = await fetchDecrypt(p.id);
+      const buf = await fetchDecrypt(p.id, false, ctrl && ctrl.signal);
       if (mine !== run) return;
       const url = URL.createObjectURL(new Blob([buf], { type: 'image/jpeg' }));
       urls.push(url);
@@ -329,6 +356,8 @@
   function closeGuide() {
     run++;
     open = null;
+    queue = []; active = 0; firstDone = false;
+    if (ctrl) { ctrl.abort(); ctrl = null; }   // ferma i download della guida chiusa
     if (observer) { observer.disconnect(); observer = null; }
     for (const u of urls) URL.revokeObjectURL(u);
     urls = [];
