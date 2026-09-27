@@ -5,110 +5,172 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <title>Area Agenti | Sebastiano Facco</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230d0d0d'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='16' fill='%23d4af5f' text-anchor='middle'%3ESF%3C/text%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231b3f96'/%3E%3Cpath d='M18 18h28v8H26v8h16v8H26v8h-8z' fill='white'/%3E%3C/svg%3E">
 <style>
   :root {
-    --bg: #0d0d0d;
-    --surface: #151515;
-    --line: rgba(255,255,255,.10);
-    --text: #ece9e2;
-    --muted: #8c8880;
-    --gold: #d4af5f;
-    --err: #e2685c;
+    color-scheme: light;
+    --blue-900: #183989;
+    --blue-800: #1b469f;
+    --blue-700: #2461cf;
+    --blue-100: #eaf1ff;
+    --blue-50: #f5f8ff;
+    --ink: #17213a;
+    --muted: #64708a;
+    --line: #dce4f3;
+    --paper: #f6f8fc;
+    --err: #c62b3b;
+    --bar: 56px;
+    font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   }
   * { box-sizing: border-box; }
-  html, body { height: 100%; }
-  body {
-    margin: 0; background: var(--bg); color: var(--text);
-    font-family: ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif;
-    -webkit-font-smoothing: antialiased;
-  }
-  ::selection { background: var(--gold); color: #0d0d0d; }
+  [hidden] { display: none !important; }
+  body { margin: 0; background: var(--paper); color: var(--ink); -webkit-font-smoothing: antialiased; }
+  button, input { font: inherit; }
+  button { touch-action: manipulation; }
 
-  /* ---------- Gate ---------- */
-  #gate {
-    min-height: 100dvh; display: grid; place-items: center; padding: 1.5rem;
-  }
+  /* ---------- Accesso ---------- */
+  #gate { min-height: 100vh; min-height: 100dvh; display: grid; place-items: center; padding: 24px 16px; }
   .card {
-    width: min(100%, 380px); border: 1px solid var(--line);
-    background: var(--surface); padding: 2.5rem 2rem;
+    width: min(100%, 400px); background: #fff; border: 1px solid var(--line);
+    border-radius: 22px; overflow: hidden; box-shadow: 0 16px 38px rgba(20,48,111,.09);
   }
-  .mark {
-    font-family: Georgia, "Times New Roman", serif; font-size: 1.5rem;
-    color: var(--gold); letter-spacing: .06em; margin: 0 0 .35rem;
+  .card-top {
+    position: relative; overflow: hidden; padding: 28px 28px 26px; color: #fff;
+    background: linear-gradient(118deg, #17387f 0%, #275fc2 62%, #4b7add 100%);
   }
-  .card h1 {
-    font-size: .78rem; font-weight: 500; letter-spacing: .18em;
-    text-transform: uppercase; color: var(--muted); margin: 0 0 2rem;
+  .card-top:after {
+    content: ""; position: absolute; width: 220px; height: 220px; right: -80px; top: -140px;
+    border: 1px solid rgba(255,255,255,.18); border-radius: 50%;
+    box-shadow: 0 0 0 36px rgba(255,255,255,.04), 0 0 0 72px rgba(255,255,255,.025);
   }
-  label { display: block; font-size: .72rem; letter-spacing: .12em;
-          text-transform: uppercase; color: var(--muted); margin-bottom: .6rem; }
+  .card-top > * { position: relative; z-index: 1; }
+  .eyebrow { margin: 0 0 8px; font-size: .74rem; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; color: #dce8ff; }
+  .card-top h1 { margin: 0 0 6px; font-size: 1.9rem; line-height: 1.05; letter-spacing: -.04em; }
+  .lead { margin: 0; color: #dce8ff; font-size: .92rem; }
+  .card-body { padding: 26px 28px 24px; }
+  label { display: block; margin: 0 0 8px; font-size: .82rem; font-weight: 750; }
   input {
-    width: 100%; padding: .85rem .9rem; background: #0d0d0d; color: var(--text);
-    border: 1px solid var(--line); border-radius: 0; font-size: 1rem;
-    font-family: inherit;
+    width: 100%; padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px;
+    background: #fff; color: var(--ink); font-size: 1rem; outline: 0;
+    transition: border-color .2s, box-shadow .2s;
   }
-  input:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
-  button {
-    width: 100%; margin-top: 1rem; padding: .85rem 1rem; border: 1px solid var(--gold);
-    background: transparent; color: var(--gold); font: inherit; font-size: .82rem;
-    letter-spacing: .14em; text-transform: uppercase; cursor: pointer;
-    transition: background .18s ease, color .18s ease;
+  input:focus { border-color: #7aa3f4; box-shadow: 0 0 0 4px rgba(37,99,209,.12); }
+  .primary {
+    width: 100%; margin-top: 14px; padding: 14px 16px; border: 0; border-radius: 14px;
+    background: var(--blue-900); color: #fff; font-weight: 800; cursor: pointer; transition: background .2s;
   }
-  button:hover:not(:disabled), button:focus-visible { background: var(--gold); color: #0d0d0d; }
-  button:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
-  button:disabled { opacity: .5; cursor: default; }
-  .msg { margin-top: 1rem; font-size: .82rem; color: var(--err); min-height: 1.2em; }
-  .msg.info { color: var(--muted); }
-  .note { margin-top: 2rem; font-size: .72rem; line-height: 1.6; color: var(--muted);
-          border-top: 1px solid var(--line); padding-top: 1rem; }
+  .primary:hover { background: var(--blue-800); }
+  .primary:focus-visible { outline: 3px solid #7aa3f4; outline-offset: 2px; }
+  .primary:disabled { opacity: .6; cursor: default; }
+  .msg { min-height: 1.3em; margin: 12px 0 0; font-size: .85rem; font-weight: 700; color: var(--err); }
+  .msg.info { color: var(--muted); font-weight: 600; }
+  .note { margin: 18px 0 0; padding-top: 16px; border-top: 1px solid var(--line); font-size: .78rem; line-height: 1.55; color: var(--muted); }
 
-  /* ---------- Visore ---------- */
-  #viewer { display: none; height: 100dvh; flex-direction: column; }
+  /* ---------- Area riservata ---------- */
+  #viewer { display: none; }
+  body.in #gate { display: none; }
+  body.in #viewer { display: block; }
   #bar {
-    display: flex; align-items: center; gap: 1rem; padding: .7rem 1rem;
-    border-bottom: 1px solid var(--line); background: var(--surface); flex: 0 0 auto;
+    position: sticky; top: 0; z-index: 5; height: var(--bar);
+    display: flex; align-items: center; gap: 12px; padding: 0 16px;
+    background: #fff; border-bottom: 1px solid var(--line);
   }
-  #bar .who { font-family: Georgia, serif; color: var(--gold); font-size: .95rem; }
-  #bar .sep { color: var(--line); }
-  #bar .page { font-size: .78rem; letter-spacing: .1em; text-transform: uppercase;
-               color: var(--muted); }
-  #bar .spacer { margin-left: auto; }
-  #bar button { width: auto; margin: 0; padding: .45rem .9rem; font-size: .7rem; }
-  #frame { flex: 1 1 auto; width: 100%; border: 0; background: #fff; }
-  @media (prefers-reduced-motion: no-preference) {
-    .card { animation: up .4s cubic-bezier(.2,.7,.3,1) both; }
-    @keyframes up { from { opacity: 0; transform: translateY(8px); } }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; white-space: nowrap; }
+  .brand svg { width: 30px; height: 30px; flex: 0 0 30px; }
+  .crumb { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 800; }
+  .crumb small { margin-left: 8px; font-size: .8rem; font-weight: 600; color: var(--muted); }
+  .spacer { flex: 1; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px; flex: 0 0 auto;
+    padding: 9px 14px; border-radius: 11px; font-size: .85rem; font-weight: 800;
+    white-space: nowrap; cursor: pointer; transition: background .18s, color .18s, border-color .18s;
   }
+  .btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .btn.back { border: 0; background: var(--blue-50); color: var(--blue-900); }
+  .btn.back:hover { background: var(--blue-100); }
+  .btn.ghost { border: 1px solid var(--line); background: #fff; color: var(--muted); }
+  .btn.ghost:hover { color: var(--ink); border-color: #c5d2ea; }
+  .btn:focus-visible { outline: 3px solid #7aa3f4; outline-offset: 2px; }
+  body.reading .brand { display: none; }
+
+  #frame {
+    display: block; width: 100%; border: 0; background: var(--paper);
+    height: calc(100vh - var(--bar)); height: calc(100dvh - var(--bar));
+  }
+  /* Durante la lettura la dashboard resta viva sotto (filtri e scorrimento intatti al ritorno). */
+  body.reading #frame { position: fixed; top: var(--bar); left: 0; visibility: hidden; pointer-events: none; }
+
+  /* ---------- Lettura guida ---------- */
+  #reader { display: none; min-height: calc(100vh - var(--bar)); padding: 20px 16px 40px; background: #eef2f8; }
+  body.reading #reader { display: block; }
+  .pages { display: grid; gap: 16px; max-width: 1180px; margin: 0 auto; }
+  .pg {
+    position: relative; margin: 0; overflow: hidden; background: #f3f6fb;
+    border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 10px 28px rgba(25,54,117,.08);
+  }
+  .pg.ok { background: #fff; }
+  .pg img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity .25s; }
+  .pg.ok img { opacity: 1; }
+  .pg .ph { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: grid; place-items: center; color: #8a95ab; font-size: .85rem; font-weight: 700; }
+  .pg.ok .ph { display: none; }
+  .pg.err { cursor: pointer; }
+  .pg a.lnk { position: absolute; border-radius: 8px; }
+  .pg a.lnk:hover, .pg a.lnk:focus-visible { background: rgba(36,97,207,.10); outline: 2px solid var(--blue-700); }
+  .r-foot { display: flex; justify-content: center; max-width: 1180px; margin: 22px auto 0; }
+
+  @media (max-width: 760px) {
+    #bar { gap: 10px; padding: 0 12px; }
+    .btn { padding: 8px 12px; }
+    .crumb small { display: none; }
+    #reader { padding: 12px 10px 32px; }
+    .pages { gap: 10px; }
+    .pg { border-radius: 10px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 </head>
 <body>
 
 <main id="gate">
   <form class="card" id="form" autocomplete="off">
-    <p class="mark">Sebastiano Facco</p>
-    <h1>Area Agenti</h1>
-    <label for="pwd">Password di accesso</label>
-    <input type="password" id="pwd" autocomplete="current-password" autofocus>
-    <button type="submit" id="go">Accedi</button>
-    <p class="msg" id="msg" role="status" aria-live="polite"></p>
-    <p class="note">
-      I contenuti di quest'area sono cifrati. Senza la password corretta
-      non sono leggibili in alcun modo, nemmeno dal codice sorgente.
-    </p>
+    <div class="card-top">
+      <p class="eyebrow">Supporto agenti</p>
+      <h1>Area Agenti</h1>
+      <p class="lead">Procedure e guide di lavoro</p>
+    </div>
+    <div class="card-body">
+      <label for="pwd">Password di accesso</label>
+      <input type="password" id="pwd" autocomplete="current-password" autofocus>
+      <button type="submit" class="primary" id="go">Accedi</button>
+      <p class="msg" id="msg" role="status" aria-live="polite"></p>
+      <p class="note">I contenuti di quest'area sono cifrati: senza la password corretta
+        non sono leggibili in alcun modo, nemmeno dal codice sorgente.</p>
+    </div>
   </form>
 </main>
 
 <div id="viewer">
   <header id="bar">
-    <span class="who">SF</span>
-    <span class="sep">/</span>
-    <span class="page" id="crumb">Dashboard</span>
+    <button type="button" class="btn back" id="back" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Dashboard
+    </button>
+    <span class="brand">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#1b3f96"/><path d="M18 18h28v8H26v8h16v8H26v8h-8z" fill="#fff"/></svg>
+      Area Agenti
+    </span>
+    <span class="crumb" id="crumb"></span>
     <span class="spacer"></span>
-    <button type="button" id="home">Dashboard</button>
-    <button type="button" id="out">Esci</button>
+    <button type="button" class="btn ghost" id="out">Esci</button>
   </header>
-  <iframe id="frame" title="Contenuto area agenti"></iframe>
+  <iframe id="frame" title="Dashboard area agenti"></iframe>
+  <main id="reader">
+    <div class="pages" id="pages"></div>
+    <div class="r-foot">
+      <button type="button" class="btn back" id="back2">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Torna alla dashboard
+      </button>
+    </div>
+  </main>
 </div>
 
 <script>
@@ -116,8 +178,11 @@
   'use strict';
   const $ = (id) => document.getElementById(id);
   const dec = new TextDecoder();
+  const TITLE = document.title;
   let key = null, manifest = null, kdf = null;
-  const blobs = new Map();
+
+  // Guida aperta: ogni apertura ha un numero, così i caricamenti di una guida già chiusa si fermano.
+  let run = 0, open = null, observer = null, urls = [];
 
   const b64 = (s) => Uint8Array.from(atob(s), c => c.charCodeAt(0));
 
@@ -129,8 +194,9 @@
       base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
   }
 
-  async function fetchDecrypt(id) {
-    const res = await fetch(`vault/${id}.bin`, { cache: 'no-store' });
+  // I file del vault prendono il nome dal contenuto: possono stare in cache. Il manifest no.
+  async function fetchDecrypt(id, fresh) {
+    const res = await fetch(`vault/${id}.bin`, fresh ? { cache: 'no-store' } : {});
     if (!res.ok) throw new Error('risorsa non disponibile');
     const raw = new Uint8Array(await res.arrayBuffer());
     // layout: [iv 12][tag 16][ciphertext]
@@ -141,61 +207,162 @@
     return crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, body);
   }
 
-  async function assetUrl(name) {
-    if (blobs.has(name)) return blobs.get(name);
-    const id = manifest.assets[name];
-    if (!id) return name;
-    const buf = await fetchDecrypt(id);
-    const type = /\.png$/i.test(name) ? 'image/png' : 'image/jpeg';
-    const url = URL.createObjectURL(new Blob([buf], { type }));
-    blobs.set(name, url);
-    return url;
-  }
-
-  async function openPage(page) {
-    const id = manifest.pages[page];
-    if (!id) return;
-    let html = dec.decode(await fetchDecrypt(id));
-
-    // Sostituisce i riferimenti alle immagini con i blob decifrati.
-    const names = [...new Set([...html.matchAll(/src="([^"]+\.(?:jpe?g|png))"/gi)]
-      .map(m => m[1].replace(/^\.\//, '')))];
-    for (const n of names) {
-      const url = await assetUrl(n);
-      html = html.split(`src="${n}"`).join(`src="${url}"`)
-                 .split(`src="./${n}"`).join(`src="${url}"`);
-    }
-
+  // ---------- Dashboard ----------
+  async function loadDashboard() {
+    const html = dec.decode(await fetchDecrypt(manifest.pages['dashboard.html']));
     const frame = $('frame');
-    frame.srcdoc = html;
-    $('crumb').textContent = page.replace(/\.html$/, '').replace(/-/g, ' ')
-      .replace(/\b\w/g, c => c.toUpperCase());
-    sessionStorage.setItem('sf_page', page);
-
     frame.onload = () => {
       const doc = frame.contentDocument;
       if (!doc) return;
-      doc.addEventListener('click', (e) => {
-        const a = e.target.closest('a');
+      const onLink = (e) => {
+        const a = e.target.closest ? e.target.closest('a') : null;
         if (!a) return;
         const href = (a.getAttribute('href') || '').replace(/^\.\//, '');
         if (!href || href.startsWith('#')) return;
+        if (e.type === 'auxclick') {                   // clic con la rotella: niente schede rotte
+          if (manifest.guides[href]) e.preventDefault();
+          return;
+        }
         e.preventDefault();
-        if (manifest.pages[href]) openPage(href);              // resta nel vault
+        if (manifest.guides[href]) openGuide(href, a.dataset.title || a.textContent.trim(), true);
         else if (/^https?:/i.test(href)) window.open(href, '_blank', 'noopener');
         else if (/^(mailto:|tel:)/i.test(href)) location.href = href;
-        else if (href === 'index.html') top.location.href = 'index.html'; // torna al sito
-      });
+        else if (href === 'index.html') location.href = 'index.html';
+      };
+      doc.addEventListener('click', onLink);
+      doc.addEventListener('auxclick', onLink);
     };
+    frame.srcdoc = html;
   }
 
+  function showDashboard() {
+    closeGuide();
+    document.body.classList.remove('reading');
+    $('back').hidden = true;
+    $('crumb').textContent = '';
+    document.title = TITLE;
+    window.scrollTo(0, 0);
+  }
+
+  // ---------- Guida ----------
+  function openGuide(href, title, push) {
+    const guide = manifest.guides[href];
+    if (!guide) { showDashboard(); return; }
+    if (push) history.pushState({ guide: href, title }, '');
+    closeGuide();
+    const mine = run;
+    const n = guide.pages.length;
+    open = { guide, run: mine };
+
+    document.body.classList.add('reading');
+    $('back').hidden = false;
+    $('crumb').innerHTML = '';
+    $('crumb').append(title);
+    const meta = document.createElement('small');
+    meta.textContent = n === 1 ? '1 pagina' : `${n} pagine`;
+    $('crumb').append(meta);
+    document.title = `${title} · Area Agenti`;
+    window.scrollTo(0, 0);
+
+    observer = 'IntersectionObserver' in window
+      ? new IntersectionObserver(onSeen, { rootMargin: '1200px 0px' }) : null;
+    const list = $('pages');
+    guide.pages.forEach((p, i) => {
+      const fig = document.createElement('figure');
+      fig.className = 'pg';
+      fig.dataset.i = i;
+      const ratio = document.createElement('div');
+      ratio.style.paddingTop = `${(p.h / p.w * 100).toFixed(3)}%`;
+      const ph = document.createElement('span');
+      ph.className = 'ph';
+      ph.textContent = `Pagina ${i + 1}`;
+      const img = document.createElement('img');
+      img.alt = `${title}, pagina ${i + 1} di ${n}`;
+      img.width = p.w; img.height = p.h;
+      img.decoding = 'async';
+      fig.append(ratio, ph, img);
+      for (const l of p.links || []) {
+        const a = document.createElement('a');
+        a.className = 'lnk';
+        a.href = l.url; a.target = '_blank'; a.rel = 'noopener';
+        a.title = l.url;
+        a.style.left = `${l.x}%`; a.style.top = `${l.y}%`;
+        a.style.width = `${l.w}%`; a.style.height = `${l.h}%`;
+        fig.append(a);
+      }
+      list.append(fig);
+      if (observer) observer.observe(fig); else loadPage(fig, p, mine);
+    });
+  }
+
+  function onSeen(entries) {
+    for (const e of entries) {
+      if (!e.isIntersecting || !open) continue;
+      observer.unobserve(e.target);
+      loadPage(e.target, open.guide.pages[+e.target.dataset.i], open.run);
+    }
+  }
+
+  async function loadPage(fig, p, mine) {
+    const ph = fig.querySelector('.ph');
+    try {
+      const buf = await fetchDecrypt(p.id);
+      if (mine !== run) return;
+      const url = URL.createObjectURL(new Blob([buf], { type: 'image/jpeg' }));
+      urls.push(url);
+      const img = fig.querySelector('img');
+      img.onload = () => fig.classList.add('ok');
+      img.src = url;
+    } catch (err) {
+      if (mine !== run) return;
+      fig.classList.add('err');
+      ph.textContent = 'Pagina non caricata · tocca per riprovare';
+      fig.onclick = () => {
+        fig.onclick = null;
+        fig.classList.remove('err');
+        ph.textContent = `Pagina ${+fig.dataset.i + 1}`;
+        loadPage(fig, p, mine);
+      };
+    }
+  }
+
+  function closeGuide() {
+    run++;
+    open = null;
+    if (observer) { observer.disconnect(); observer = null; }
+    for (const u of urls) URL.revokeObjectURL(u);
+    urls = [];
+    $('pages').textContent = '';
+  }
+
+  function toDashboard() {
+    if (history.state && history.state.guide) history.back();   // come il tasto indietro
+    else showDashboard();
+  }
+
+  window.addEventListener('popstate', (e) => {
+    if (!manifest) return;
+    const s = e.state;
+    if (s && s.guide && manifest.guides[s.guide]) openGuide(s.guide, s.title, false);
+    else showDashboard();
+  });
+
+  // ---------- Accesso ----------
+  const kdfReady = fetch('vault/kdf.json', { cache: 'no-store' })
+    .then(r => r.json())
+    .then(j => { kdf = j; });
+
   async function unlock(password) {
+    await kdfReady;
     key = await deriveKey(password);
-    const buf = await fetchDecrypt('manifest'); // fallisce se la password è errata
+    const buf = await fetchDecrypt('manifest', true); // fallisce se la password è errata
     manifest = JSON.parse(dec.decode(buf));
-    $('gate').style.display = 'none';
-    $('viewer').style.display = 'flex';
-    await openPage(sessionStorage.getItem('sf_page') || 'dashboard.html');
+    manifest.guides = manifest.guides || {};
+    sessionStorage.removeItem('sf_page');               // chiave della vecchia dashboard
+    document.body.classList.add('in');
+    await loadDashboard();
+    const s = history.state;
+    if (s && s.guide && manifest.guides[s.guide]) openGuide(s.guide, s.title, false);
   }
 
   $('form').addEventListener('submit', async (e) => {
@@ -207,31 +374,42 @@
       const pwd = $('pwd').value;
       await unlock(pwd);
       sessionStorage.setItem('sf_k', pwd);
+      msg.textContent = '';
     } catch (err) {
+      document.body.classList.remove('in');
+      manifest = null;
       msg.className = 'msg';
-      msg.textContent = 'Password errata.';
+      msg.textContent = err && err.name === 'OperationError'
+        ? 'Password errata.'
+        : 'Area non raggiungibile. Controlla la connessione e riprova.';
       $('pwd').value = ''; $('pwd').focus();
     } finally {
       btn.disabled = false;
     }
   });
 
-  $('home').addEventListener('click', () => openPage('dashboard.html'));
+  $('back').addEventListener('click', toDashboard);
+  $('back2').addEventListener('click', toDashboard);
   $('out').addEventListener('click', () => {
     sessionStorage.removeItem('sf_k');
     sessionStorage.removeItem('sf_page');
-    for (const url of blobs.values()) URL.revokeObjectURL(url);
+    closeGuide();
+    history.replaceState(null, '');
     location.reload();
   });
 
-  // Avvio: carica i parametri KDF, poi riapre la sessione se già sbloccata.
-  fetch('vault/kdf.json', { cache: 'no-store' })
-    .then(r => r.json())
-    .then(async (j) => {
-      kdf = j;
-      const saved = sessionStorage.getItem('sf_k');
-      if (saved) { try { await unlock(saved); } catch { sessionStorage.removeItem('sf_k'); } }
+  // Avvio: riapre la sessione se già sbloccata in questa scheda.
+  const saved = sessionStorage.getItem('sf_k');
+  if (saved) {
+    const msg = $('msg');
+    msg.className = 'msg info'; msg.textContent = 'Apertura in corso…';
+    unlock(saved).then(() => { msg.textContent = ''; }, () => {
+      sessionStorage.removeItem('sf_k');
+      document.body.classList.remove('in');
+      manifest = null;
+      msg.textContent = '';
     });
+  }
 })();
 </script>
 </body>
