@@ -146,6 +146,8 @@ picture{display:contents}
  .network .wire{width:14px}
  .network .split .node{width:70px}
 }
+/* P. IVA in fondo pagina (obbligatoria in home): sul telefono va a capo su una riga sua */
+@media(max-width:720px){.piva-sep{display:none}.piva{display:block;margin-top:4px}}
 </style></head>
 <body>
 <div class="wrap"><header><a href="#" class="brand" aria-label="Sebastiano Facco, inizio">SF<span>.</span></a><a class="menu" href="https://sebastianofacco.com/area-agenti.html" aria-label="Accedi direttamente all’Area Agenti">Area Agenti</a><nav id="navigation" aria-label="Menu principale"><a href="#approccio">Chi sono</a><a href="#soluzioni">Soluzioni</a><a href="#contatti">Contatti</a><a class="agents" href="https://sebastianofacco.com/area-agenti.html">Area Agenti <svg class="arrow-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></a></nav></header>
@@ -159,7 +161,7 @@ picture{display:contents}
 </div></section>
 <section class="belief wrap"><div><p class="label">03 / Il mio approccio</p><div class="belief-mark" aria-hidden="true">“</div></div><div><blockquote>Quando una soluzione serve, lo dico.<br><span>Quando non serve, anche.</span></blockquote><p>Credo nella consulenza chiara e nelle relazioni che durano. Seguo il cliente anche dopo la vendita: perché il valore di un referente si vede quando c’è bisogno di una risposta.</p></div></section>
 <section class="contact" id="contatti"><div class="wrap"><div class="contact-top"><span class="label">04 / Il prossimo passo</span><p>Una domanda, un contratto da rivedere o una nuova esigenza. Cominciamo da qui.</p></div><a class="contact-link" href="mailto:info@sebastianofacco.com">Parliamone.<span class="circle" aria-hidden="true"><svg class="arrow-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></span></a><div class="contact-bottom"><a href="mailto:info@sebastianofacco.com">info@sebastianofacco.com</a><a href="https://sebastianofacco.com/area-agenti.html">Lavori con me? Area Agenti <svg class="arrow-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></a></div></div></section>
-<div class="wrap"><footer><span class="footer-name">sebastiano facco.</span><span>© 2026 · TLC & Sales Specialist</span></footer></div>
+<div class="wrap"><footer><span class="footer-name">sebastiano facco.</span><span>© 2026 · TLC & Sales Specialist<span class="piva-sep"> · </span><span class="piva">P.&nbsp;IVA&nbsp;03996090274</span></span></footer></div>
 <script>
 const ticker=document.querySelector('.ticker'),pause=document.querySelector('.ticker-toggle');pause.addEventListener('click',()=>{const stopped=ticker.classList.toggle('paused');pause.setAttribute('aria-pressed',String(stopped));pause.setAttribute('aria-label',stopped?'Riprendi lo scorrimento':'Metti in pausa lo scorrimento');pause.innerHTML=stopped?'<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m7 4 8 6-8 6z"/></svg>':'<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 4v12M13 4v12"/></svg>'});
 </script></body></html>
